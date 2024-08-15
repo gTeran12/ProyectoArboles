@@ -2,12 +2,17 @@ package com.mycompany.preguntame;
 
 import java.util.*;
 
-class BinaryNodeTree<E,K> {
+class BinaryNodeTree<E> {
     private E content;
-    private K key;
-    private BinaryTree<E,K> left;
-    private BinaryTree<E,K> right;
+    private BinaryTree<E> left;
+    private BinaryTree<E> right;
 
+    public BinaryNodeTree(E content) {
+        this.content = content;
+        left = null;
+        right = null;
+    }
+    
     public E getContent() {
         return content;
     }
@@ -16,27 +21,19 @@ class BinaryNodeTree<E,K> {
         this.content = content;
     }
 
-    public K getKey() {
-        return key;
-    }
-
-    public void setKey(K key) {
-        this.key = key;
-    }
-
-    public BinaryTree<E, K> getLeft() {
+    public BinaryTree<E> getLeft() {
         return left;
     }
 
-    public void setLeft(BinaryTree<E, K> left) {
+    public void setLeft(BinaryTree<E> left) {
         this.left = left;
     }
 
-    public BinaryTree<E, K> getRight() {
+    public BinaryTree<E> getRight() {
         return right;
     }
 
-    public void setRight(BinaryTree<E, K> right) {
+    public void setRight(BinaryTree<E> right) {
         this.right = right;
     }
 
