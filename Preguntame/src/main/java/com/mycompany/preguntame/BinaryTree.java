@@ -7,174 +7,97 @@ import java.io.*;
  *
  * @author Geovanny
  */
+public class BinaryTree {
 
-public class BinaryTree<E> {
-    private BinaryNodeTree<E> root; 
+    private BinaryNodeTree root;
+    private BinaryNodeTree currentNode;
 
-
-    public BinaryTree(BinaryNodeTree<E> root) {
-        this.root = root;
-    }
-    
-    public BinaryTree(){
-        root = null;
-    }
-    
-    public BinaryTree<String> createTree(String fileRoute, int n){
-        List<String> questions = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(fileRoute))){
-            String line;
-            while((line = br.readLine()) != null){
-                questions.add(line);
-            }
-        }catch(IOException e){
-            System.out.println("Could not read the file: " + fileRoute);
+    public BinaryTree() {
+        try {
+            loadTree("src/main/resources/files/preguntas.txt", "src/main/resources/files/respuestas.txt");
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        BinaryTree<String> questionsTree = new BinaryTree<>();
-        for (int i = 0; i < n ; i++){
-            String question = questions.get(i);
-            if(questionsTree.isEmpty()){
-                questionsTree.setRoot(new BinaryNodeTree<>(question));
-            }else{
-                this.addQuestionToTree(questionsTree,question);
-            }
-        }
-        return questionsTree;
-    }
-    
-    
-    public void addQuestionToTree(BinaryTree<String> tree, String question){
-        List<BinaryNodeTree<String>> leafs = new ArrayList<>();
-        if (!tree.isEmpty()){
-            if (!tree.isLeaf()){
-                if (tree.getRoot().getLeft() != null){
-                    addQuestionToTree(tree.getRoot().getLeft(), question);
-                }
-                if (tree.getRoot().getRight() != null){
-                    addQuestionToTree(tree.getRoot().getRight(), question);
-                }
-            }else leafs.add(tree.getRoot());
-        }else System.out.println("The tree's empty");
-        
-        for (int i = 0; i < leafs.size(); i++){
-            leafs.get(i).setLeft(new BinaryTree<>(new BinaryNodeTree<>(question)));
-            leafs.get(i).setRight(new BinaryTree<>(new BinaryNodeTree<>(question)));
-        }
-    }
-    
-    
-    
-    public BinaryNodeTree<E> getRoot() {
-        return root;
+        currentNode = root;
     }
 
-    public void setRoot(BinaryNodeTree<E> root) {
-        this.root = root;
-    }
-    
-    
-    
-    public boolean isEmpty(){
-        return this.root == null;
-    }
-    
-    public boolean isLeaf(){ //es hoja?
-        if(!this.isEmpty()){
-            return this.root.getLeft() == null && this.root.getRight() == null;
-        }else return false;
-    }
-    
-    public void recorrerEnPreOrden(){
-        if(!this.isEmpty()){
-            //1. imprimir a la raiz
-            System.out.println(this.root.getContent());
-            
-            //2. recorrerEnPreOrden el hijo izquierdo
-            if(this.root.getLeft() != null){
-                this.root.getLeft().recorrerEnPreOrden();
-            }
-            
-            //3. recorrerEnPreOrden el hijo derecho
-            if(this.root.getRight() != null){
-                this.root.getRight().recorrerEnPreOrden();
-            }   
+    private void loadTree(String questionsFilePath, String answersFilePath) throws IOException {
+        BufferedReader questionReader = new BufferedReader(new FileReader(questionsFilePath));
+        String question;
+        Map<Integer, String> questions = new HashMap<>();
+        int index = 0;
+        while ((question = questionReader.readLine()) != null) {
+            questions.put(index++, question);
         }
-    }
-    
-    public void recorrerEnPostOrden(){
-        if(!this.isEmpty()){
-            //1. recorrerEnPreOrden el hijo izquierdo
-            if(this.root.getLeft() != null){
-                this.root.getLeft().recorrerEnPreOrden();
-            }
-            
-            //2. recorrerEnPreOrden el hijo derecho
-            if(this.root.getRight() != null){
-                this.root.getRight().recorrerEnPreOrden();
-            }
-            
-            //3. imprimir a la raiz
-            System.out.println(this.root.getContent());
-        }
-    }
-    
-    
-    public void recorrerEnOrden(){
-        if(!this.isEmpty()){
-            //1. recorrerEnPreOrden el hijo izquierdo
-            if(this.root.getLeft() != null){
-                this.root.getLeft().recorrerEnPreOrden();
-            }
-            
-            //2. imprimir a la raiz
-            System.out.println(this.root.getContent());
-            
-            //3. recorrerEnPreOrden el hijo derecho
-            if(this.root.getRight() != null){
-                this.root.getRight().recorrerEnPreOrden();
-            }  
-        }
-    }
-    
-    
-    public int countLeaves(){ //contar hojas
-        if(this.isEmpty()) return 0;
-        else if(this.isLeaf()) return 1;
-        else{
-            int leftLeaves = 0;
-            int rightLeaves = 0;
-            if(this.root.getLeft() != null){
-                leftLeaves = this.root.getLeft().countLeaves();
-            }
-            if(this.root.getRight() != null){
-                rightLeaves = this.root.getRight().countLeaves();
-            }
-            return leftLeaves + rightLeaves;
-        }
-    }
-    
-    
-    public int countLeavesIterative(){
-        int leaves = 0; //contador
-        Stack<BinaryTree<E>> pila = new Stack();
-        
-        if(!this.isEmpty()){  
-            pila.push(this);
-            while(!pila.isEmpty()){
-                BinaryTree<E> tree = pila.pop();
-                if(tree.isLeaf()) leaves++;
-                if(tree.getRoot().getLeft() != null){
-                    pila.push(tree.getRoot().getLeft());
-                }
-                if(tree.getRoot().getRight() != null){
-                    pila.push(tree.getRoot().getRight());
+        questionReader.close();
+
+        BufferedReader answerReader = new BufferedReader(new FileReader(answersFilePath));
+        String answerLine;
+        root = new BinaryNodeTree(questions.get(0)); // Empezamos en la primera pregunta
+        while ((answerLine = answerReader.readLine()) != null) {
+            String[] parts = answerLine.split(" ");
+            String animal = parts[0];
+            BinaryNodeTree current = root;
+            for (int i = 1; i < parts.length; i++) { // Navegamos a través de las respuestas
+                if (parts[i].equalsIgnoreCase("Si")) {
+                    if (current.getYesNode() == null) {
+                        if (i == parts.length - 1) { // Si es la última respuesta, debe ser un nodo hoja
+                            current.setYesNode(new BinaryNodeTree(null));
+                            current.getYesNode().setAnswer(animal);
+                        } else {
+                            current.setYesNode(new BinaryNodeTree(questions.get(i)));
+                        }
+                    }
+                    current = current.getYesNode();
+                } else {
+                    if (current.getNoNode() == null) {
+                        if (i == parts.length - 1) { // Si es la última respuesta, debe ser un nodo hoja
+                            current.setNoNode(new BinaryNodeTree(null));
+                            current.getNoNode().setAnswer(animal);
+                        } else {
+                            current.setNoNode(new BinaryNodeTree(questions.get(i)));
+                        }
+                    }
+                    current = current.getNoNode();
                 }
             }
         }
-        return leaves;
+        answerReader.close();
     }
 
+    public String askQuestion() {
+        if (currentNode == null || currentNode.getQuestion() == null) {
+            return "No se pudo determinar una pregunta.";
+        }
+        return currentNode.getQuestion();
+    }
+
+    public void processAnswer(boolean answer) {
+        if (currentNode != null) {
+            if (answer) {
+                if (currentNode.getYesNode() != null) {
+                    currentNode = currentNode.getYesNode();
+                } else {
+                    System.out.println("No hay más nodos para 'Sí', debería ser un nodo hoja.");
+                    currentNode = null;
+                }
+            } else {
+                if (currentNode.getNoNode() != null) {
+                    currentNode = currentNode.getNoNode();
+                } else {
+                    System.out.println("No hay más nodos para 'No', debería ser un nodo hoja.");
+                    currentNode = null;
+                }
+            }
+        } else {
+            System.out.println("Nodo actual es nulo.");
+        }
+    }
+
+    public boolean isGameOver() {
+        return currentNode == null || currentNode.isLeaf();
+    }
+    
+    
 
 }

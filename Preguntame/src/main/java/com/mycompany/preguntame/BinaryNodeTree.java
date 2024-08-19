@@ -2,41 +2,50 @@ package com.mycompany.preguntame;
 
 import java.util.*;
 
-class BinaryNodeTree<E> {
-    private E content;
-    private BinaryTree<E> left;
-    private BinaryTree<E> right;
+/**
+ *
+ * @author Hackzll
+ */
 
-    public BinaryNodeTree(E content) {
-        this.content = content;
-        left = null;
-        right = null;
-    }
-    
-    public E getContent() {
-        return content;
-    }
+class BinaryNodeTree {
+    private String question;
+    private BinaryNodeTree yesNode;
+    private BinaryNodeTree noNode;
+    private String answer;
 
-    public void setContent(E content) {
-        this.content = content;
+    public BinaryNodeTree(String question) {
+        this.question = question;
     }
 
-    public BinaryTree<E> getLeft() {
-        return left;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setLeft(BinaryTree<E> left) {
-        this.left = left;
+    public BinaryNodeTree getYesNode() {
+        return yesNode;
     }
 
-    public BinaryTree<E> getRight() {
-        return right;
+    public void setYesNode(BinaryNodeTree yesNode) {
+        this.yesNode = yesNode;
     }
 
-    public void setRight(BinaryTree<E> right) {
-        this.right = right;
+    public BinaryNodeTree getNoNode() {
+        return noNode;
     }
 
-    
-    
+    public void setNoNode(BinaryNodeTree noNode) {
+        this.noNode = noNode;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public boolean isLeaf() {
+        return (yesNode == null && noNode == null);
+    }
 }

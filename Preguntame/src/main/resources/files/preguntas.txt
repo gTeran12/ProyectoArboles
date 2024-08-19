@@ -1,20 +1,20 @@
-1. ¿Es un mamífero?
-2. ¿Vive en el agua?
-3. ¿Es carnívoro?
-4. ¿Tiene plumas?
-5. ¿Puede volar?
-6. ¿Es doméstico?
-7. ¿Es más grande que un perro?
-8. ¿Tiene escamas?
-9. ¿Tiene cuatro patas?
-10. ¿Es un herbívoro?
-11. ¿Tiene un cuello largo?
-12. ¿Es nocturno?
-13. ¿Es conocido por ser rápido?
-14. ¿Tiene un exoesqueleto?
-15. ¿Puede cambiar de color?
-16. ¿Es venenoso?
-17. ¿Es un primate?
-18. ¿Es conocido por su canto?
-19. ¿Es migratorio?
-20. ¿Es un depredador de alto nivel en su ecosistema?
+¿Es un mamifero?
+¿Vive en el agua?
+¿Es carnivoro?
+¿Tiene plumas?
+¿Puede volar?
+¿Es domestico?
+¿Es más grande que un perro?
+¿Tiene escamas?
+¿Tiene cuatro patas?
+¿Es un herbivoro?
+¿Tiene un cuello largo?
+¿Es nocturno?
+¿Es conocido por ser rapido?
+¿Tiene un exoesqueleto?
+¿Puede cambiar de color?
+¿Es venenoso?
+¿Es un primate?
+¿Es conocido por su canto?
+¿Es migratorio?
+¿Es un depredador de alto nivel en su ecosistema?
