@@ -1,7 +1,5 @@
 package com.mycompany.preguntame;
 
-import java.util.*;
-
 /**
  *
  * @author Hackzll

@@ -1,17 +1,3 @@
-/**package com.mycompany.preguntame;
-
-import java.io.IOException;
-import javafx.fxml.FXML;
-
-public class PrimaryController {
-
-    @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
-    }
-}
-*/
-
 package com.mycompany.preguntame;
 
 import javafx.fxml.FXML;
