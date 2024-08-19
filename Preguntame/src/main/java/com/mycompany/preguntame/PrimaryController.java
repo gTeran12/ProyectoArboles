@@ -25,7 +25,7 @@ public class PrimaryController {
     public void initialize() {
         // Cargar la imagen en el ImageView
         Image image = new Image("file:src/main/resources/assets/Portada.jpg");
-        imgTitle.setImage(image);
+        imgTitle.setImage(image); 
     }
 
     @FXML

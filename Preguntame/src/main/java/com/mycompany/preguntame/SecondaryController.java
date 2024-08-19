@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.util.List;
+import javafx.scene.control.Button;
 
 /**
  *
@@ -29,6 +30,11 @@ public class SecondaryController {
     private HBox hboxConfirmExit;
     @FXML
     private HBox hboxImages;
+    @FXML
+    private Button btnYes;
+
+    @FXML
+    private Button btnNo;
 
     private static int maxQuestions;
     private BinaryTree decisionTree;
@@ -88,7 +94,9 @@ public class SecondaryController {
 
         // Mostrar las imágenes de los posibles animales
         showAnimalImages(decisionTree.getPossibleAnimals());
-
+        // Ocultar los botones de respuesta una vez que se muestra el resultado
+        btnYes.setVisible(false);
+        btnNo.setVisible(false);
         lblQuestion.setVisible(false);
         hboxPlayAgain.setVisible(true);
         lblPlayAgain.setVisible(true);
@@ -106,10 +114,11 @@ public class SecondaryController {
             hboxImages.getChildren().add(imageView);
         }
     }
-
+    // Volver a la ventana primary
     @FXML
     private void handlePlayAgainYes() {
-        // Volver a la ventana primary
+        btnYes.setVisible(true);
+        btnNo.setVisible(true);
         try {
             App.setRoot("primary");
         } catch (IOException e) {
@@ -124,10 +133,9 @@ public class SecondaryController {
         hboxConfirmExit.setVisible(true);
         lblConfirmExit.setVisible(true);
     }
-
+    // Cerrar la aplicación
     @FXML
     private void handleExitYes() {
-        // Cerrar la aplicación
         System.exit(0);
     }
 
