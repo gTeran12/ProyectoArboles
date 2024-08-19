@@ -1,12 +1,15 @@
 package com.mycompany.preguntame;
 
-import java.util.*;
-import java.io.*;
 
-/**
- *
- * @author Geovanny
- */
+import com.mycompany.preguntame.BinaryNodeTree;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class BinaryTree {
 
     private BinaryNodeTree root;
@@ -97,7 +100,6 @@ public class BinaryTree {
     public boolean isGameOver() {
         return currentNode == null || currentNode.isLeaf();
     }
-    
-    
 
+    //Agregar aqui tu parte Geovanny
 }

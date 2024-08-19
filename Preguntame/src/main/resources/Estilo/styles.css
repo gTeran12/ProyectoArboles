@@ -1,0 +1,67 @@
+/* Estilo general */
+.root {
+    -fx-background-color: transparent;  /* Permite que la imagen de fondo se vea */
+}
+
+/* Estilo para el VBox */
+.vbox {
+    -fx-background-image: url("file:src/main/resources/assets/fondo.jpg");
+    -fx-background-size: cover;
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+}
+
+/* Estilo para las etiquetas y el contenido */
+.content-area {
+    -fx-padding: 40px;  /* Ajusta el padding para centrar el contenido */
+    -fx-background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente para que resalte */
+    -fx-background-radius: 20px; /* Bordes redondeados para encajar mejor en la imagen de fondo */
+    -fx-alignment: center;  /* Centrar el contenido */
+}
+
+/* Estilo para el título */
+.label-title {
+    -fx-font-size: 60px;  /* Tamaño de fuente grande */
+    -fx-font-weight: extra-bold;  /* Aumenta el grosor del texto */
+    -fx-text-fill: #333;  /* Color del texto */
+    -fx-padding: 20 0 20 0;  /* Espaciado alrededor del título */
+    -fx-alignment: center;  /* Centrar el texto */
+}
+
+/* Estilo para las demás etiquetas */
+.label-normal {
+    -fx-font-size: 22px;  /* Ajuste en el tamaño de la fuente */
+    -fx-text-fill: #555;
+    -fx-alignment: center;  /* Centra el texto */
+}
+
+/* Estilo para los campos de texto */
+.textfield {
+    -fx-font-size: 22px;  /* Aumenta el tamaño de la fuente en el campo de texto */
+    -fx-padding: 10;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5;
+    -fx-background-color: #fff; /* Fondo blanco */
+}
+
+/* Estilo para los botones */
+.button {
+    -fx-background-color: #4CAF50; /* Verde suave */
+    -fx-text-fill: white;
+    -fx-font-size: 22px;  /* Aumenta el tamaño de la fuente en los botones */
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #45a049; /* Color al pasar el ratón */
+}
+
+/* Estilo para contenedores */
+.hbox, .vbox {
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+}
+
+
