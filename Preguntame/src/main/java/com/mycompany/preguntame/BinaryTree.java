@@ -102,4 +102,55 @@ public class BinaryTree {
     }
 
     //Agregar aqui tu parte Geovanny
+    public String getPossibleAnswers() {
+        List<String> possibleAnimals = getPossibleAnimals();
+
+        if (possibleAnimals.size() == 1) {
+            return "El animal es: " + possibleAnimals.get(0);
+        } else if (possibleAnimals.size() > 1) {
+            return "No se pudo determinar el animal exacto, pero podría ser uno de los siguientes: " + String.join(", ", possibleAnimals);
+        }
+
+        return "No se pudo determinar el animal.";
+    }
+
+    // Método auxiliar para recolectar respuestas posibles
+    private String collectPossibleAnswers(BinaryNodeTree node) {
+        StringBuilder animals = new StringBuilder();
+        collectAnimalsFromNode(node, animals);
+        return animals.toString();
+    }
+
+    private void collectAnimalsFromNode(BinaryNodeTree node, StringBuilder animals) {
+        if (node == null) return;
+        if (node.isLeaf() && node.getAnswer() != null) {
+            if (animals.length() > 0) {
+                animals.append(", ");
+            }
+            animals.append(node.getAnswer());
+        } else {
+            collectAnimalsFromNode(node.getYesNode(), animals);
+            collectAnimalsFromNode(node.getNoNode(), animals);
+        }
+    }
+    
+    // Método para obtener las respuestas posibles (animales) cuando no se ha podido determinar uno solo.
+    public List<String> getPossibleAnimals() {
+        List<String> possibleAnimals = new ArrayList<>();
+        collectPossibleAnimals(currentNode, possibleAnimals);
+        return possibleAnimals;
+    }
+
+    // Recolecta los posibles animales desde los nodos hijos.
+    private void collectPossibleAnimals(BinaryNodeTree node, List<String> animals) {
+        if (node == null) {
+            return;
+        }
+        if (node.isLeaf()) {
+            animals.add(node.getAnswer());  // Aquí se asume que el método getAnswer() devuelve el nombre del animal.
+        } else {
+            collectPossibleAnimals(node.getYesNode(), animals);
+            collectPossibleAnimals(node.getNoNode(), animals);
+        }
+    }
 }
