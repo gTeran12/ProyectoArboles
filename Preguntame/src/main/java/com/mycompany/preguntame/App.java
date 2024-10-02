@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
  * JavaFX App
  */
 public class App extends Application {
-
+    //hola
     private static Scene scene;
 
     @Override
