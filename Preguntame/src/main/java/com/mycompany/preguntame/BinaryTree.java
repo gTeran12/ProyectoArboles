@@ -1,16 +1,14 @@
 package com.mycompany.preguntame;
 
-
-import com.mycompany.preguntame.BinaryNodeTree;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class BinaryTree {
+
+    private static final Logger logger = Logger.getLogger(BinaryTree.class.getName());
 
     private BinaryNodeTree root;
     private BinaryNodeTree currentNode;
@@ -19,53 +17,70 @@ public class BinaryTree {
         try {
             loadTree("src/main/resources/files/preguntas.txt", "src/main/resources/files/respuestas.txt");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("Error loading tree: " + e.getMessage());
         }
         currentNode = root;
     }
 
     private void loadTree(String questionsFilePath, String answersFilePath) throws IOException {
-        BufferedReader questionReader = new BufferedReader(new FileReader(questionsFilePath));
-        String question;
-        Map<Integer, String> questions = new HashMap<>();
-        int index = 0;
-        while ((question = questionReader.readLine()) != null) {
-            questions.put(index++, question);
-        }
-        questionReader.close();
+        Map<Integer, String> questions = readQuestions(questionsFilePath);
+        root = new BinaryNodeTree(questions.get(0)); 
+        buildTreeFromAnswers(answersFilePath, questions);
+    }
 
-        BufferedReader answerReader = new BufferedReader(new FileReader(answersFilePath));
-        String answerLine;
-        root = new BinaryNodeTree(questions.get(0)); // Empezamos en la primera pregunta
-        while ((answerLine = answerReader.readLine()) != null) {
-            String[] parts = answerLine.split(" ");
-            String animal = parts[0];
-            BinaryNodeTree current = root;
-            for (int i = 1; i < parts.length; i++) { // Navegamos a través de las respuestas
-                if (parts[i].equalsIgnoreCase("Si")) {
-                    if (current.getYesNode() == null) {
-                        if (i == parts.length - 1) { // Si es la última respuesta, debe ser un nodo hoja
-                            current.setYesNode(new BinaryNodeTree(null));
-                            current.getYesNode().setAnswer(animal);
-                        } else {
-                            current.setYesNode(new BinaryNodeTree(questions.get(i)));
-                        }
-                    }
-                    current = current.getYesNode();
-                } else {
-                    if (current.getNoNode() == null) {
-                        if (i == parts.length - 1) { // Si es la última respuesta, debe ser un nodo hoja
-                            current.setNoNode(new BinaryNodeTree(null));
-                            current.getNoNode().setAnswer(animal);
-                        } else {
-                            current.setNoNode(new BinaryNodeTree(questions.get(i)));
-                        }
-                    }
-                    current = current.getNoNode();
-                }
+    private Map<Integer, String> readQuestions(String filePath) throws IOException {
+        Map<Integer, String> questions = new HashMap<>();
+        try (BufferedReader questionReader = new BufferedReader(new FileReader(filePath))) {
+            String question;
+            int index = 0;
+            while ((question = questionReader.readLine()) != null) {
+                questions.put(index++, question);
             }
         }
-        answerReader.close();
+        return questions;
+    }
+
+    private void buildTreeFromAnswers(String filePath, Map<Integer, String> questions) throws IOException {
+        try (BufferedReader answerReader = new BufferedReader(new FileReader(filePath))) {
+            String answerLine;
+            while ((answerLine = answerReader.readLine()) != null) {
+                processAnswerLine(answerLine, questions);
+            }
+        }
+    }
+
+    private void processAnswerLine(String answerLine, Map<Integer, String> questions) {
+        String[] parts = answerLine.split(" ");
+        String animal = parts[0];
+        BinaryNodeTree current = root;
+
+        for (int i = 1; i < parts.length; i++) {
+            boolean isYes = parts[i].equalsIgnoreCase("Si");
+            boolean isLast = (i == parts.length - 1);
+
+            if (isYes) {
+                current = createNode(current, true, isLast, animal, questions.get(i));
+            } else {
+                current = createNode(current, false, isLast, animal, questions.get(i));
+            }
+        }
+    }
+
+    private BinaryNodeTree createNode(BinaryNodeTree current, boolean yes, boolean isLast, String animal, String question) {
+        BinaryNodeTree nextNode = yes ? current.getYesNode() : current.getNoNode();
+
+        if (nextNode == null) {
+            if (isLast) {
+                nextNode = new BinaryNodeTree(null);
+                nextNode.setAnswer(animal);
+            } else {
+                nextNode = new BinaryNodeTree(question);
+            }
+
+            if (yes) current.setYesNode(nextNode);
+            else current.setNoNode(nextNode);
+        }
+        return nextNode;
     }
 
     public String askQuestion() {
@@ -77,23 +92,16 @@ public class BinaryTree {
 
     public void processAnswer(boolean answer) {
         if (currentNode != null) {
-            if (answer) {
-                if (currentNode.getYesNode() != null) {
-                    currentNode = currentNode.getYesNode();
-                } else {
-                    System.out.println("No hay más nodos para 'Sí', debería ser un nodo hoja.");
-                    currentNode = null;
-                }
+            if (answer && currentNode.getYesNode() != null) {
+                currentNode = currentNode.getYesNode();
+            } else if (!answer && currentNode.getNoNode() != null) {
+                currentNode = currentNode.getNoNode();
             } else {
-                if (currentNode.getNoNode() != null) {
-                    currentNode = currentNode.getNoNode();
-                } else {
-                    System.out.println("No hay más nodos para 'No', debería ser un nodo hoja.");
-                    currentNode = null;
-                }
+                logger.info("No more nodes in this path. It should be a leaf node.");
+                currentNode = null;
             }
         } else {
-            System.out.println("Nodo actual es nulo.");
+            logger.warning("Current node is null.");
         }
     }
 
@@ -101,7 +109,6 @@ public class BinaryTree {
         return currentNode == null || currentNode.isLeaf();
     }
 
-    //Agregar aqui tu parte Geovanny
     public String getPossibleAnswers() {
         List<String> possibleAnimals = getPossibleAnimals();
 
@@ -114,40 +121,16 @@ public class BinaryTree {
         return "No se pudo determinar el animal.";
     }
 
-    // Método auxiliar para recolectar respuestas posibles
-    private String collectPossibleAnswers(BinaryNodeTree node) {
-        StringBuilder animals = new StringBuilder();
-        collectAnimalsFromNode(node, animals);
-        return animals.toString();
-    }
-
-    private void collectAnimalsFromNode(BinaryNodeTree node, StringBuilder animals) {
-        if (node == null) return;
-        if (node.isLeaf() && node.getAnswer() != null) {
-            if (animals.length() > 0) {
-                animals.append(", ");
-            }
-            animals.append(node.getAnswer());
-        } else {
-            collectAnimalsFromNode(node.getYesNode(), animals);
-            collectAnimalsFromNode(node.getNoNode(), animals);
-        }
-    }
-    
-    // Método para obtener las respuestas posibles (animales) cuando no se ha podido determinar uno solo.
     public List<String> getPossibleAnimals() {
         List<String> possibleAnimals = new ArrayList<>();
         collectPossibleAnimals(currentNode, possibleAnimals);
         return possibleAnimals;
     }
 
-    // Recolecta los posibles animales desde los nodos hijos.
     private void collectPossibleAnimals(BinaryNodeTree node, List<String> animals) {
-        if (node == null) {
-            return;
-        }
+        if (node == null) return;
         if (node.isLeaf()) {
-            animals.add(node.getAnswer());  // Aquí se asume que el método getAnswer() devuelve el nombre del animal.
+            animals.add(node.getAnswer());
         } else {
             collectPossibleAnimals(node.getYesNode(), animals);
             collectPossibleAnimals(node.getNoNode(), animals);

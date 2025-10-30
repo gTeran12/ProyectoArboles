@@ -5,16 +5,13 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-
 import java.io.IOException;
 import java.util.List;
 import javafx.scene.control.Button;
 
-/**
- *
- * @author Hackzll
- */
 public class SecondaryController {
+
+    private static final String PRIMARY_VIEW = "primary";  // ✅ constant for view name
 
     @FXML
     private Label lblQuestion;
@@ -32,7 +29,6 @@ public class SecondaryController {
     private HBox hboxImages;
     @FXML
     private Button btnYes;
-
     @FXML
     private Button btnNo;
 
@@ -64,90 +60,16 @@ public class SecondaryController {
     @FXML
     private void handleNo() {
         if (currentQuestionCount == 0) {
-            // Volver a la ventana primary si el juego no ha comenzado
             try {
-                App.setRoot("primary");
+                App.setRoot(PRIMARY_VIEW);  // ✅ use constant
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            // Procesar la respuesta "No" durante el juego
             processAnswer(false);
             currentQuestionCount++;
         }
     }
 
-    private void processAnswer(boolean answer) {
-        decisionTree.processAnswer(answer);
-
-        if (decisionTree.isGameOver() || currentQuestionCount >= maxQuestions) {
-            showResult();
-        } else {
-            lblQuestion.setText(decisionTree.askQuestion());
-        }
-    }
-
-    private void showResult() {
-        lblResult.setVisible(true);
-        String result = decisionTree.getPossibleAnswers();
-        lblResult.setText(result);
-
-        // Mostrar las imágenes de los posibles animales
-        showAnimalImages(decisionTree.getPossibleAnimals());
-        // Ocultar los botones de respuesta una vez que se muestra el resultado
-        btnYes.setVisible(false);
-        btnNo.setVisible(false);
-        lblQuestion.setVisible(false);
-        hboxPlayAgain.setVisible(true);
-        lblPlayAgain.setVisible(true);
-    }
-
-    private void showAnimalImages(List<String> animals) {
-        hboxImages.getChildren().clear();  // Limpiar imágenes previas
-        hboxImages.setVisible(true);
-
-        for (String animal : animals) {
-            String imagePath = "file:src/main/resources/assets/" + animal.toLowerCase() + ".jpg";
-            ImageView imageView = new ImageView(new Image(imagePath));
-            imageView.setFitHeight(100);  // Ajusta el tamaño según sea necesario
-            imageView.setFitWidth(100);   // Ajusta el tamaño según sea necesario
-            hboxImages.getChildren().add(imageView);
-        }
-    }
-    // Volver a la ventana primary
-    @FXML
-    private void handlePlayAgainYes() {
-        btnYes.setVisible(true);
-        btnNo.setVisible(true);
-        try {
-            App.setRoot("primary");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void handlePlayAgainNo() {
-        hboxPlayAgain.setVisible(false);
-        lblPlayAgain.setVisible(false);
-        hboxConfirmExit.setVisible(true);
-        lblConfirmExit.setVisible(true);
-    }
-    // Cerrar la aplicación
-    @FXML
-    private void handleExitYes() {
-        System.exit(0);
-    }
-
-    @FXML
-    private void handleExitNo() {
-        // Volver a la ventana primary
-        try {
-            App.setRoot("primary");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
 
 
